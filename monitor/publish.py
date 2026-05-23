@@ -26,7 +26,7 @@ def publish(settings: Settings) -> None:
     if settings.gh_preflight and shutil.which("gh"):
         subprocess.run(["gh", "auth", "status"], cwd=str(site_dir), check=False)
 
-    run(["git", "init"], site_dir)
+    run(["git", "init", "--initial-branch", settings.publication_branch], site_dir)
     run(["git", "checkout", "-B", settings.publication_branch], site_dir)
     run(["git", "config", "user.name", settings.git_author_name], site_dir)
     run(["git", "config", "user.email", settings.git_author_email], site_dir)
