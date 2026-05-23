@@ -91,7 +91,7 @@ select {
 
 .metrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
   margin-bottom: 16px;
 }
@@ -224,20 +224,12 @@ td {
     flex-direction: column;
   }
 
-  .metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   canvas {
     aspect-ratio: 16 / 10;
   }
 }
 
 @media (max-width: 460px) {
-  .metrics {
-    grid-template-columns: 1fr;
-  }
-
   .panel-header {
     align-items: stretch;
     flex-direction: column;

@@ -134,6 +134,9 @@ function renderLatest(latest) {
   document.getElementById("offers-total").textContent = formatNumber(
     summary.offers_total,
   );
+  document.getElementById("max-node-offers").textContent = formatNumber(
+    summary.max_node_offers,
+  );
   document.getElementById("makers-total").textContent = formatNumber(
     summary.makers_total,
   );

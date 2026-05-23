@@ -18,11 +18,14 @@ def utc_now() -> str:
 
 def build_summary(results: list[dict]) -> dict:
     ok_results = [item for item in results if item["ok"]]
+    max_offer_node = max(ok_results, key=lambda item: int(item["offers"]), default=None)
     return {
         "nodes_total": len(results),
         "nodes_ok": len(ok_results),
         "nodes_failed": len(results) - len(ok_results),
         "offers_total": sum(int(item["offers"]) for item in results),
+        "max_node_offers": int(max_offer_node["offers"]) if max_offer_node else 0,
+        "max_node": max_offer_node["node"] if max_offer_node else None,
         "fidelity_bonds_total": sum(int(item["fidelity_bonds"]) for item in results),
         "makers_total": sum(int(item["makers"]) for item in results),
     }

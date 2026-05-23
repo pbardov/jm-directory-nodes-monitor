@@ -5,6 +5,8 @@
   "summary": {
     "fidelity_bonds_total": 0,
     "makers_total": 0,
+    "max_node": null,
+    "max_node_offers": 0,
     "nodes_failed": 0,
     "nodes_ok": 0,
     "nodes_total": 0,
