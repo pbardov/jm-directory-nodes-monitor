@@ -59,6 +59,25 @@ def decode_line(line: bytes) -> dict[str, Any]:
     return json.loads(line.decode("utf-8").strip())
 
 
+def read_line(sock: socket.socket, buffer: bytearray, timeout: float) -> bytes:
+    deadline = time.time() + timeout
+    while True:
+        newline_index = buffer.find(b"\n")
+        if newline_index >= 0:
+            line = bytes(buffer[: newline_index + 1])
+            del buffer[: newline_index + 1]
+            return line
+
+        remaining = deadline - time.time()
+        if remaining <= 0:
+            raise socket.timeout()
+        sock.settimeout(min(remaining, 1.0))
+        chunk = sock.recv(4096)
+        if not chunk:
+            return b""
+        buffer.extend(chunk)
+
+
 def recv_exact(sock: socket.socket, size: int) -> bytes:
     chunks = []
     remaining = size
@@ -177,7 +196,7 @@ def probe_directory_node(
     sock: socket.socket | None = None
     try:
         sock = socks5_connect(socks_host, socks_port, node.host, node.port, timeout)
-        file = sock.makefile("rwb", buffering=0)
+        read_buffer = bytearray()
         handshake = {
             "app-name": JM_APP_NAME,
             "directory": False,
@@ -187,11 +206,11 @@ def probe_directory_node(
             "nick": nick,
             "network": network,
         }
-        file.write(encode_message(MSG_HANDSHAKE, json.dumps(handshake)))
+        sock.sendall(encode_message(MSG_HANDSHAKE, json.dumps(handshake)))
         deadline = time.time() + timeout
         accepted = False
         while time.time() < deadline:
-            raw = file.readline()
+            raw = read_line(sock, read_buffer, deadline - time.time())
             if not raw:
                 raise RuntimeError("connection closed before handshake")
             message = decode_line(raw)
@@ -210,12 +229,11 @@ def probe_directory_node(
         if not accepted:
             raise RuntimeError("directory handshake timed out")
 
-        file.write(encode_message(MSG_PUBMSG, f"{nick}!PUBLIC!orderbook"))
+        sock.sendall(encode_message(MSG_PUBMSG, f"{nick}!PUBLIC!orderbook"))
         collect_deadline = time.time() + collect_seconds
-        sock.settimeout(1)
         while time.time() < collect_deadline:
             try:
-                raw = file.readline()
+                raw = read_line(sock, read_buffer, 1)
             except socket.timeout:
                 continue
             if not raw:
