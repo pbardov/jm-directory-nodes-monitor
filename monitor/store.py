@@ -64,4 +64,4 @@ def write_outputs(
 def copy_static_site(source_web_dir: Path, dest_dir: Path) -> None:
     if dest_dir.exists():
         shutil.rmtree(dest_dir)
-    shutil.copytree(source_web_dir, dest_dir)
+    shutil.copytree(source_web_dir, dest_dir, ignore=shutil.ignore_patterns(".github"))

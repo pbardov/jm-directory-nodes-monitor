@@ -9,7 +9,7 @@ It has two parts:
   directory nodes through Tor, logs results, aggregates history, and publishes
   generated files to a dedicated Git branch with a force push;
 - a static web UI that reads `data/latest.json` and `data/history.json` and is
-  published to GitHub Pages by GitHub Actions from the publication branch.
+  served by GitHub Pages from the publication branch.
 
 ## Runtime
 
@@ -40,6 +40,9 @@ python3 -m monitor run-once --nodes-file config/nodes.example.json
 Generated output is written to `web/data/` and then copied to a temporary
 publication worktree. The publisher creates a single commit and force-pushes it
 to `PUBLICATION_BRANCH`, so the publication branch does not accumulate history.
+The publication tree excludes `.github/` because GitHub rejects workflow-file
+updates made with repository deploy keys unless the creating OAuth token has the
+extra workflow scope.
 
 Required environment for publishing:
 
