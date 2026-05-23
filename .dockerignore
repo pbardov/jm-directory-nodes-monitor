@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+!.env.example
+.runtime/
+/data/
+/publish-work/
+!web/data/
+!web/data/*.json
+AGENTS.md
+.codex/
+.agents/
+__pycache__/
+*.pyc
+.pytest_cache/

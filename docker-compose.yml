@@ -1,0 +1,37 @@
+services:
+  monitor:
+    build:
+      context: .
+    image: ${MONITOR_IMAGE:-jm-directory-nodes-monitor:latest}
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      DIRECTORY_NODES: ${DIRECTORY_NODES:-3kxw6lf5vf6y26emzwgibzhrzhmhqiw6ekrek3nqfjjmhwznb2moonad.onion:5222,bqlpq6ak24mwvuixixitift4yu42nxchlilrcqwk2ugn45tdclg42qid.onion:5222,ylegp63psfqh3zk2huckf2xth6dxvh2z364ykjfmvsoze6tkfjceq7qd.onion:5222,odpwaf67rs5226uabcamvypg3y4bngzmfk7255flcdodesqhsvkptaid.onion:5222,coinjointovy3eq5fjygdwpkbcdx63d7vd4g32mw7y553uj3kjjzkiqd.onion:5222,satoshi2vcg5e2ept7tjkzlkpomkobqmgtsjzegg6wipnoajadissead.onion:5222,shssats5ucnwdpbticbb4dymjzf2o27tdecpes35ededagjpdmpxm6yd.onion:5222,jmarketxf5wc4aldf3slm5u6726zsky52bqnfv6qyxe5hnafgly6yuyd.onion:5222,nok55gjlqw6h76zi6gigukoztpx7xgo5r3w5csu362nys5yukzrxpgad.onion:5222}
+      TOR_SOCKS_HOST: ${TOR_SOCKS_HOST:-127.0.0.1}
+      TOR_SOCKS_PORT: ${TOR_SOCKS_PORT:-9050}
+      JM_NETWORK: ${JM_NETWORK:-mainnet}
+      POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-300}
+      PROBE_TIMEOUT_SECONDS: ${PROBE_TIMEOUT_SECONDS:-90}
+      ORDERBOOK_COLLECT_SECONDS: ${ORDERBOOK_COLLECT_SECONDS:-30}
+      MAX_HISTORY_SAMPLES: ${MAX_HISTORY_SAMPLES:-2016}
+      PUBLISH_ENABLED: ${PUBLISH_ENABLED:-false}
+      PUBLISH_INTERVAL_SECONDS: ${PUBLISH_INTERVAL_SECONDS:-300}
+      PUBLISH_REMOTE_URL: ${PUBLISH_REMOTE_URL:-git@github.com:pbardov/jm-directory-nodes-monitor.git}
+      PUBLICATION_BRANCH: ${PUBLICATION_BRANCH:-pages}
+      GIT_AUTHOR_NAME: ${GIT_AUTHOR_NAME:-directory-nodes-monitor}
+      GIT_AUTHOR_EMAIL: ${GIT_AUTHOR_EMAIL:-directory-nodes-monitor@users.noreply.github.com}
+      GH_PREFLIGHT: ${GH_PREFLIGHT:-true}
+    volumes:
+      - monitor-data:/app/data
+      - monitor-web-data:/app/web/data
+      - ${SSH_DIR:-./.runtime/ssh}:/root/.ssh:ro
+      - ${GH_CONFIG_DIR:-./.runtime/gh}:/root/.config/gh:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  monitor-data:
+  monitor-web-data:

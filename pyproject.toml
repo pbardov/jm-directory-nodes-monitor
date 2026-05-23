@@ -1,0 +1,9 @@
+[project]
+name = "jm-directory-nodes-monitor"
+version = "0.1.0"
+description = "JoinMarket directory node availability and orderbook monitor"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

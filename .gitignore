@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+/data/
+/publish-work/
+.runtime/
+__pycache__/
+*.pyc
+.pytest_cache/
